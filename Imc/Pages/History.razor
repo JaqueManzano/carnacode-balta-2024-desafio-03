@@ -1,0 +1,23 @@
+﻿@page "/history"
+@inject HttpClient Http
+
+<PageTitle>Histórico</PageTitle>
+
+    <div class="container">
+        <img src="icon-no-bg.png" class="icone" />
+        <h1>Histórico</h1>
+        <input class="input-historico" type="text" placeholder="Pesquisar..." />
+        <div class="itens">
+            <div class="quadrado"></div>
+            <div class="pesoIdeal">
+                <p><span class="spanPeso">Peso Ideal ✅</span> <span class="tempo">8m atrás </span> </p>
+            </div>
+            <div class="texto"><p>Parabéns, você está no seu peso ideal, <br> continue mantendo este estilo! </p></div>
+            <hr>
+            <div class="quadrado"></div>
+            <div class="sobrepeso">
+                <p><span class="spanSobrepeso">Sobrepeso ⛔️</span> <span class="data">12/10/2023 </span> </p>
+            </div>
+            <div class="texto"><p>Estamos quase lá! Faça alguns ajustes <br> para ficar no peso ideal! </p></div>
+        </div>
+    </div>

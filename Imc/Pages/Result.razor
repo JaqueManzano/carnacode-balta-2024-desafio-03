@@ -1,0 +1,80 @@
+﻿@page "/result"
+@inject NavigationManager _navigationManager
+@using Microsoft.AspNetCore.WebUtilities
+
+<main class="main-background">
+
+    <PageTitle>Resultado</PageTitle>
+
+    <div class="container container-result">
+        <div class="image-wrapper">
+            <img src="icon-no-bg.png" class="icone icone-result" />
+        </div>
+        <h1>@tituloResultado</h1>
+        <p>@textoResultado</p>
+
+        <button class="btnFlat" type="submit">Registrar medidas</button>
+        <button class="btnOutline" onclick="window.location.href = '/history'">Ver meu histórico</button>
+    </div>
+</main>
+
+
+@code {
+    public string? resultado;
+    public string textoResultado = string.Empty;
+    public string tituloResultado = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        var uri = _navigationManager.ToAbsoluteUri(_navigationManager.Uri);
+        resultado = QueryHelpers.ParseQuery(uri.Query).TryGetValue("resultado", out var resultadoValue) ? resultadoValue.ToString() : null;
+
+
+        VerificarResultado();
+    }
+
+    private void VerificarResultado()
+    {
+        if (resultado != null && Enum.TryParse(resultado, out EResultadoImc resultadoEnum))
+        {
+            switch (resultadoEnum)
+            {
+                case EResultadoImc.BAIXO:
+                    {
+                        tituloResultado = "⛔ Abaixo do Peso.";
+                        textoResultado = "Você está abaixo do peso ideal. Recomendamos consultar um médico.";
+                        break;
+                    }
+                case EResultadoImc.NORMAL:
+                    {
+                        tituloResultado = "✅ Parabéns!";
+                        textoResultado = "Você está no peso ideal, continue mantendo este estilo!";
+                        break;
+                    }
+                case EResultadoImc.SOBREPESO:
+                    {
+                        tituloResultado = "⛔ Sobrepeso.";
+                        textoResultado = "Cuidado você está com sobrepeso,  dê uma atenção para sua saúde.";
+                        break;
+                    }
+                case EResultadoImc.OBESIDADE:
+                    {
+                        tituloResultado = "⛔ Obesidade.";
+                        textoResultado = "Cuidado você está com obesidade,  dê uma atenção para sua saúde.";
+                        break;
+                    }
+                default:
+                    {
+                        tituloResultado = "⛔ Não foi possível medir seu IMC.";
+                        break;
+                    }
+            }
+        }
+    }
+}
+
+<style>
+    main, main .top-row {
+        background-color: #2E1462 !important;
+    }
+</style>

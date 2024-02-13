@@ -1,0 +1,79 @@
+﻿@page "/"
+@inject ImcService _service
+@inject NavigationManager _navigationManager
+
+<PageTitle>IMC</PageTitle>
+
+<EditForm Model="_model">
+    <ValidationSummary />
+    <div class="container">
+        <h1>Cálculo de IMC</h1>
+        <div class="divInputs">
+            <input class="input-text" type="text" placeholder="Altura" @oninput="@((args) => FormatAltura(args))" />
+
+            <input class="input-text" type="text" placeholder="Peso" @oninput="@((args) => FormatPeso(args))" />
+            <select class="input-text" type="text" placeholder="Sexo" @bind="_model.Sexo">
+                <option value="F" selected>Feminino</option>
+                <option value="M">Masculino</option>
+            </select>
+        </div>
+        <div class="divCheckbox">
+            <input type="checkbox" class="checkbox" @bind-value="_model.MaiorDe65">
+            <label for="checkbox" class="checkbox-label"> Eu tenho 65 anos ou mais</label>
+        </div>
+
+        <button class="btnFlat" onclick="@HandleSubmit">Calcular meu IMC</button>
+        <button class="btnOutline" onclick="@HandleEntendaOCalculo">Entenda o cálculo</button>
+    </div>
+
+    @if (!string.IsNullOrEmpty(@_errorMessage))
+    {
+        <div class="alert-danger" role="alert" style="width: 100%; text-align: center; margin-top: 20px; padding: 5px; border-radius: 15px;">
+            @_errorMessage
+        </div>
+    }
+
+</EditForm>
+
+
+@code {
+    ImcModel _model = new();
+    string? _errorMessage = null;
+
+    private void FormatAltura(ChangeEventArgs args)
+    {
+        string valor = args.Value?.ToString().Replace(".", ",");
+        _model.AlturaEmMetros = double.TryParse(valor, out double altura) ? altura : (double?)null;
+    }   
+
+    private void FormatPeso(ChangeEventArgs args)
+    {
+        string valor = args.Value?.ToString().Replace(".", ",");
+        _model.Peso = double.TryParse(valor, out double peso) ? peso : (double?)null;
+    }
+
+    void HandleSubmit()
+    {
+        if(_model.AlturaEmMetros == null)
+        {
+            _errorMessage = "Altura não informada ou inválida.";
+            return;
+        }
+
+        if(_model.Peso == null)
+        {
+            _errorMessage = "Peso não informado ou inválido.";
+            return;
+        }
+
+        EResultadoImc resultado = _service.CalcularIMC(_model);
+
+        _navigationManager.NavigateTo($"/result?resultado={resultado}");
+    }
+
+    void HandleEntendaOCalculo()
+    {
+        _errorMessage = "Tela não implementada.";
+        return;
+    }
+}
